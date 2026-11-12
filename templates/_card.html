@@ -1,0 +1,22 @@
+{% from "_ui.html" import icon, item_img %}
+<a class="card {{ it.kind }} {{ it.status }}" href="{{ url_for('item', item_id=it.id) }}">
+  <div class="card-media">
+    <img src="{{ item_img(it) }}" alt="{{ it.title }}" loading="lazy" class="{{ 'photo' if it.photo else 'art' }}">
+    <span class="pill pill-{{ it.kind }}">{{ it.kind|capitalize }}</span>
+    {% if it.status == 'returned' %}<span class="pill pill-returned">{{ icon('check') }}Returned</span>
+    {% elif it.at_desk %}<span class="pill pill-desk">{{ icon('shield') }}At desk</span>{% endif %}
+  </div>
+  <div class="card-body">
+    <h3>{{ it.title }}</h3>
+    <ul class="facts">
+      <li>{{ icon('pin') }}{{ it.location }}</li>
+      <li>{{ icon('calendar') }}{{ it.item_date }}</li>
+    </ul>
+    <div class="card-foot">
+      <span class="chip">{{ it.category }}{% if it.color %} · {{ it.color }}{% endif %}</span>
+      {% if match_counts and match_counts.get(it.id) %}
+        <span class="match-badge">{{ icon('sparkles') }}{{ match_counts[it.id] }} match{{ 'es' if match_counts[it.id] > 1 }}</span>
+      {% endif %}
+    </div>
+  </div>
+</a>

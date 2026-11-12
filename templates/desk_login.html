@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "_ui.html" import icon %}
+{% block title %}Security desk{% endblock %}
+{% block body %}
+<div class="login-card">
+  <img src="{{ url_for('static', filename='img/shield.svg') }}" alt="" class="login-art">
+  <h1>Security desk</h1>
+  <p class="muted">Staff sign-in. See the items held at the desk and the strong matches to follow up on.</p>
+  <form method="post" class="login-form">
+    <label class="search">
+      {{ icon('lock') }}
+      <input type="password" name="pin" placeholder="Enter staff PIN" autofocus inputmode="numeric" aria-label="PIN">
+    </label>
+    <button class="btn btn-primary btn-block">Sign in{{ icon('arrow-right') }}</button>
+  </form>
+  <p class="fine">Demo PIN: <code>1234</code></p>
+</div>
+{% endblock %}

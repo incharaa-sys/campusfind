@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% from "_ui.html" import icon, item_img, score_ring %}
+{% block title %}{{ it.title }}{% endblock %}
+{% block body %}
+<a class="back" href="{{ url_for('index') }}#board">{{ icon('arrow-left') }}All reports</a>
+
+<div class="detail">
+  <div class="detail-media">
+    <img src="{{ item_img(it) }}" alt="{{ it.title }}" class="{{ 'photo' if it.photo else 'art' }}">
+    {% if not it.photo %}<span class="media-note">{{ icon('camera') }}No photo yet. Showing an illustration.</span>{% endif %}
+  </div>
+
+  <div class="detail-info">
+    <div class="pills">
+      <span class="pill pill-{{ it.kind }}">{{ it.kind|capitalize }}</span>
+      {% if it.status == 'returned' %}<span class="pill pill-returned">{{ icon('check') }}Returned</span>{% endif %}
+      {% if it.at_desk %}<span class="pill pill-desk">{{ icon('shield') }}At security desk</span>{% endif %}
+    </div>
+    <h1>{{ it.title }}</h1>
+    {% if it.description %}<p class="desc">{{ it.description }}</p>{% endif %}
+
+    {% if it.ai_description %}
+    <div class="ai-box">
+      <div class="ai-box-head">{{ icon('sparkles') }}What the AI saw in the photo</div>
+      <p>{{ it.ai_description }}</p>
+    </div>
+    {% endif %}
+
+    <ul class="spec">
+      <li><span class="spec-ic">{{ icon('tag') }}</span><div><small>Category</small>{{ it.category }}</div></li>
+      {% if it.color %}<li><span class="spec-ic">{{ icon('droplet') }}</span><div><small>Color</small>{{ it.color|capitalize }}</div></li>{% endif %}
+      <li><span class="spec-ic">{{ icon('pin') }}</span><div><small>{{ 'Last seen' if it.kind=='lost' else 'Found at' }}</small>{{ it.location }}</div></li>
+      <li><span class="spec-ic">{{ icon('calendar') }}</span><div><small>Date</small>{{ it.item_date }}</div></li>
+    </ul>
+
+    <div class="contact">
+      <div class="avatar">{{ (it.contact_name or '?')[0]|upper }}</div>
+      <div>
+        <small>{{ 'Owner' if it.kind == 'lost' else 'Found by' }}</small>
+        <b>{{ it.contact_name }}</b>
+        <span class="muted">{{ it.contact }}</span>
+      </div>
+    </div>
+
+    {% if it.at_desk %}
+    <div class="note note-info">{{ icon('shield') }}<span>This item is held at the <b>security desk</b>. Bring your college ID to collect it.</span></div>
+    {% endif %}
+    {% if mine %}
+    <div class="note note-brand">{{ icon('key') }}<span>You posted this. Your item code is <code>{{ it.owner_code }}</code>. Keep it so you can mark the item as returned.</span></div>
+    {% endif %}
+  </div>
+</div>
+
+<section class="matches">
+  <div class="section-head">
+    <div>
+      <h2>{{ icon('sparkles', 'h-ic') }}Possible matches</h2>
+      <p class="muted">
+        {% if matches %}{{ matches|length }} found by {{ 'Claude AI' if matches[0].engine=='claude' else 'the local matcher' }}, best match first{% else %}Nothing yet{% endif %}
+      </p>
+    </div>
+    {% if it.status == 'open' %}
+    <form method="post" action="{{ url_for('rematch', item_id=it.id) }}">
+      <button class="btn btn-outline" id="rematch">{{ icon('refresh') }}Re-run matching</button>
+    </form>
+    {% endif %}
+  </div>
+
+  {% for m in matches %}
+  <article class="match">
+    {{ score_ring(m.score) }}
+    <a class="match-thumb" href="{{ url_for('item', item_id=m.id) }}">
+      <img src="{{ item_img(m) }}" alt="{{ m.title }}" class="{{ 'photo' if m.photo else 'art' }}">
+    </a>
+    <div class="match-body">
+      <div class="match-title">
+        <a href="{{ url_for('item', item_id=m.id) }}">{{ m.title }}</a>
+        <span class="pill pill-sm pill-{{ m.kind }}">{{ m.kind|capitalize }}</span>
+        {% if m.status == 'returned' %}<span class="pill pill-sm pill-returned">Returned</span>{% endif %}
+      </div>
+      <ul class="facts">
+        <li>{{ icon('pin') }}{{ m.location }}</li>
+        <li>{{ icon('calendar') }}{{ m.item_date }}</li>
+        <li>{{ icon('user') }}{{ m.contact_name }} · {{ m.contact }}</li>
+      </ul>
+      <p class="reason">{{ m.reason }}</p>
+    </div>
+    <a class="match-go" href="{{ url_for('item', item_id=m.id) }}" aria-label="Open {{ m.title }}">{{ icon('arrow-right') }}</a>
+  </article>
+  {% else %}
+  <div class="empty-state slim">
+    <img src="{{ url_for('static', filename='img/empty.svg') }}" alt="">
+    <h3>No matches yet</h3>
+    <p>We check again every time someone posts a new {{ 'found' if it.kind=='lost' else 'lost' }} item. Come back later, or re-run matching now.</p>
+  </div>
+  {% endfor %}
+</section>
+
+{% if it.status == 'open' %}
+<section class="resolve">
+  <div class="resolve-copy">
+    <div class="resolve-ic">{{ icon('check-circle') }}</div>
+    <div>
+      <h2>Got it back?</h2>
+      <p class="muted">Close this post so others know. {% if not is_admin %}You need the item code you got when you posted.{% endif %}</p>
+    </div>
+  </div>
+  <form method="post" action="{{ url_for('resolve', item_id=it.id) }}" class="resolve-form">
+    {% if not is_admin %}<input name="code" placeholder="Item code" value="{{ it.owner_code if mine else '' }}" required aria-label="Item code">{% endif %}
+    <select name="matched_with" aria-label="Linked report">
+      <option value="">No linked report</option>
+      {% for m in matches %}<option value="{{ m.id }}">Matched with: {{ m.title }} (#{{ m.id }})</option>{% endfor %}
+    </select>
+    <button class="btn btn-found">{{ icon('check') }}Mark as returned</button>
+  </form>
+</section>
+{% endif %}
+<script>
+  const r = document.getElementById('rematch');
+  if (r) r.form.addEventListener('submit', () => { r.disabled = true; r.classList.add('loading'); r.lastChild.textContent = 'Matching…'; });
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_ui.html" import icon, item_img, score_ring %}
+{% block title %}Security desk{% endblock %}
+{% block body %}
+<div class="desk-head">
+  <div>
+    <span class="eyebrow on">{{ icon('shield') }}Staff view</span>
+    <h1>Security desk dashboard</h1>
+    <p class="muted">Contact the owner of each strong match and ask them to collect the item with their college ID.</p>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><span class="kpi-ic c2">{{ icon('bell') }}</span><div><b>{{ strong|length }}</b><small>Strong matches</small></div></div>
+    <div class="kpi"><span class="kpi-ic c3">{{ icon('box') }}</span><div><b>{{ held|length }}</b><small>Held at desk</small></div></div>
+  </div>
+</div>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>{{ icon('sparkles', 'h-ic') }}Strong matches to act on</h2>
+    <span class="muted">Score 60% or higher</span>
+  </div>
+  {% if strong %}
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Score</th><th>Lost report</th><th>Found item</th><th>Why it matches</th><th>Contact owner</th></tr></thead>
+      <tbody>
+      {% for s in strong %}
+      <tr>
+        <td>{{ score_ring(s.score, 'sm') }}</td>
+        <td><a class="tlink" href="{{ url_for('item', item_id=s.lost_id) }}"><span class="dot lost"></span>{{ s.lost_title }}</a></td>
+        <td>
+          <a class="tlink" href="{{ url_for('item', item_id=s.found_id) }}"><span class="dot found"></span>{{ s.found_title }}</a>
+          {% if s.at_desk %}<span class="pill pill-sm pill-desk">{{ icon('shield') }}At desk</span>{% endif %}
+        </td>
+        <td class="reason">{{ s.reason }}</td>
+        <td><b>{{ s.contact_name }}</b><br><span class="muted">{{ s.contact }}</span></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state slim"><img src="{{ url_for('static', filename='img/empty.svg') }}" alt=""><h3>No strong matches right now</h3><p>New matches show up here as soon as they're found.</p></div>
+  {% endif %}
+</section>
+
+<section class="board">
+  <div class="section-head"><div><h2>Items held at the desk</h2><p class="muted">{{ held|length }} item{{ 's' if held|length != 1 }} waiting to be collected</p></div></div>
+  {% if held %}
+  <div class="grid">{% for it in held %}{% include "_card.html" %}{% endfor %}</div>
+  {% else %}
+  <div class="empty-state slim"><img src="{{ url_for('static', filename='img/empty.svg') }}" alt=""><h3>The desk is empty</h3><p>Found items handed in at the desk show up here.</p></div>
+  {% endif %}
+</section>
+{% endblock %}

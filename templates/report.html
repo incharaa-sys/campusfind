@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% from "_ui.html" import icon %}
+{% block title %}Report a {{ kind }} item{% endblock %}
+{% block body %}
+<a class="back" href="{{ url_for('index') }}">{{ icon('arrow-left') }}Back to reports</a>
+
+<div class="report-layout">
+  <div class="form-card">
+    <div class="form-head {{ kind }}">
+      <div class="form-head-ic">{{ icon('help' if kind=='lost' else 'box') }}</div>
+      <div>
+        <h1>{{ 'Report a lost item' if kind=='lost' else 'Report a found item' }}</h1>
+        <p>{% if ai_enabled %}Add a photo and the AI fills in the details. Title and description are optional if you upload a photo.
+          {% else %}Add as much detail as you can. Marks like stickers or scratches help a lot.{% endif %}</p>
+      </div>
+      <div class="switch">
+        <a href="{{ url_for('report', kind='lost') }}" class="{{ 'on' if kind=='lost' }}">Lost</a>
+        <a href="{{ url_for('report', kind='found') }}" class="{{ 'on' if kind=='found' }}">Found</a>
+      </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="form" id="reportForm">
+      <fieldset>
+        <legend><span class="num">1</span>The item</legend>
+        <label class="drop" id="drop">
+          <input type="file" name="photo" accept="image/*" id="photo">
+          <div class="drop-empty">
+            <div class="drop-ic">{{ icon('upload') }}</div>
+            <b>Drop a photo here or <u>browse</u></b>
+            <span>{{ 'Recommended' if kind=='found' else 'Optional' }} · JPG or PNG, up to 10 MB{% if ai_enabled %} · AI fills in the details{% endif %}</span>
+          </div>
+          <img id="preview" alt="Selected photo" hidden>
+          <span class="drop-change" hidden>{{ icon('camera') }}Change photo</span>
+        </label>
+
+        <label class="field">What is it?
+          <input name="title" placeholder="{{ 'e.g. Black boAt earphones in a case' if kind=='lost' else 'e.g. Blue steel water bottle' }}">
+        </label>
+        <div class="row">
+          <label class="field">Category
+            <select name="category">
+              <option value="">{{ 'Let AI decide' if ai_enabled else 'Choose…' }}</option>
+              {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+            </select>
+          </label>
+          <label class="field">Color <input name="color" placeholder="e.g. black"></label>
+        </div>
+        <label class="field">Description, in your own words
+          <textarea name="description" rows="3" placeholder="Stickers, scratches, a name written on it, what was inside…"></textarea>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="num">2</span>Where and when</legend>
+        <div class="row">
+          <label class="field">{{ 'Where did you lose it (best guess)?' if kind=='lost' else 'Where did you find it?' }}
+            <select name="location" required>
+              {% for zone, locs in locations.items() %}
+                <optgroup label="{{ zone }}">{% for l in locs %}<option>{{ l }}</option>{% endfor %}</optgroup>
+              {% endfor %}
+            </select>
+          </label>
+          <label class="field">When? <input type="date" name="item_date" value="{{ today }}" max="{{ today }}"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="num">3</span>How to reach you</legend>
+        <div class="row">
+          <label class="field">Your name <input name="contact_name" required autocomplete="name"></label>
+          <label class="field">Phone, email or Instagram <input name="contact" required></label>
+        </div>
+        {% if kind == 'found' %}
+        <label class="check"><input type="checkbox" name="at_desk"><span>I handed it in at the security desk</span></label>
+        {% endif %}
+      </fieldset>
+
+      <button class="btn btn-lg btn-block {{ 'btn-lost' if kind=='lost' else 'btn-found' }}" id="submit">{{ icon('sparkles') }}<span>Post &amp; find matches</span></button>
+      <p class="fine">After you post, you get a private item code. You need it to mark the item as returned.</p>
+    </form>
+  </div>
+
+  <aside class="tips">
+    <img src="{{ url_for('static', filename='img/items/' ~ ('earphones' if kind=='lost' else 'bottle') ~ '.svg') }}" alt="">
+    <h3>Tips for a faster match</h3>
+    <ul>
+      <li>{{ icon('camera') }}<span><b>Add a clear photo.</b> Matching works best with a photo, and the AI can read brands and stickers.</span></li>
+      <li>{{ icon('tag') }}<span><b>Say what makes it yours:</b> a name, a scratch, a keychain, the case.</span></li>
+      <li>{{ icon('pin') }}<span><b>Pick the closest place.</b> Places nearby on campus still count as a match.</span></li>
+      {% if kind == 'found' %}<li>{{ icon('shield') }}<span><b>Hand it in at the security desk</b> so the owner can collect it with their ID.</span></li>
+      {% else %}<li>{{ icon('bell') }}<span><b>Check back later.</b> Your post is matched again every time someone finds something.</span></li>{% endif %}
+    </ul>
+  </aside>
+</div>
+
+<script>
+  const f = document.getElementById('photo'), p = document.getElementById('preview'),
+        drop = document.getElementById('drop'), change = drop.querySelector('.drop-change');
+  function show() {
+    if (!f.files[0]) return;
+    p.src = URL.createObjectURL(f.files[0]); p.hidden = false; change.hidden = false; drop.classList.add('has');
+  }
+  f.addEventListener('change', show);
+  ['dragenter', 'dragover'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', ev => { if (ev.dataTransfer.files.length) { f.files = ev.dataTransfer.files; show(); } });
+  document.getElementById('reportForm').addEventListener('submit', () => {
+    const b = document.getElementById('submit'); b.disabled = true; b.classList.add('loading');
+    b.querySelector('span').textContent = 'Finding matches…';
+  });
+</script>
+{% endblock %}

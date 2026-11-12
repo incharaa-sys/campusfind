@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260">
+<defs><radialGradient id="g" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#e0e7ff" stop-opacity="0"/></radialGradient>
+<linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+<linearGradient id="steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2dd4bf"/><stop offset=".6" stop-color="#14b8a6"/><stop offset="1" stop-color="#0f766e"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset=".5" stop-color="#f59e0b"/><stop offset="1" stop-color="#b45309"/></linearGradient>
+</defs>
+<circle cx="200" cy="130" r="125" fill="url(#g)"/>
+<ellipse cx="190" cy="232" rx="80" ry="9" fill="#0f172a" opacity=".07"/>
+<g transform="translate(10.0 5.0) scale(0.9)">
+<polygon points="134,124 174,102 286,102 246,124" fill="#e7c08f"/>
+<rect x="134" y="124" width="112" height="104" fill="#c98f55"/>
+<polygon points="246,124 286,102 286,206 246,228" fill="#a96f38"/>
+<polygon points="176,124 214,102 230,102 192,124" fill="#f5f5f4" opacity=".7"/>
+<text x="190" y="196" text-anchor="middle" font-family="'Plus Jakarta Sans','Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="56" font-weight="800" fill="#fff" opacity=".92">?</text>
+</g>
+<g transform="translate(286 92) rotate(-25)">
+  <circle r="30" fill="#fff" fill-opacity=".6" stroke="#4f46e5" stroke-width="8"/>
+  <rect x="-6" y="33" width="12" height="40" rx="6" fill="#4f46e5"/>
+</g>
+</svg>

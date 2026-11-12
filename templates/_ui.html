@@ -1,0 +1,20 @@
+{# Shared UI helpers. Import with: {% from "_ui.html" import icon, item_img %} #}
+
+{% macro icon(name, cls="") -%}
+<svg class="i {{ cls }}" aria-hidden="true"><use href="#i-{{ name }}"/></svg>
+{%- endmacro %}
+
+{# Uploaded photo if there is one, otherwise the illustration for the item's category. #}
+{% macro item_img(it) -%}
+{%- if it.photo -%}
+{{ url_for('uploads', name=it.photo) }}
+{%- else -%}
+{{ url_for('static', filename='img/items/' ~ (it.category or 'Other')|lower|replace(' & ', '-')|replace(' ', '-') ~ '.svg') }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro score_ring(score, size="") -%}
+<div class="ring t{{ score // 25 }} {{ size }}" style="--p: {{ score }}" title="{{ score }}% match">
+  <span>{{ score }}<small>%</small></span>
+</div>
+{%- endmacro %}

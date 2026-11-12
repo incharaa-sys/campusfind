@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fefce8"/><stop offset="1" stop-color="#fef9c3"/></linearGradient>
+<pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="#fde68a"/></pattern>
+<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+
+<linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+<linearGradient id="steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2dd4bf"/><stop offset=".6" stop-color="#14b8a6"/><stop offset="1" stop-color="#0f766e"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset=".5" stop-color="#f59e0b"/><stop offset="1" stop-color="#b45309"/></linearGradient>
+</defs>
+<rect width="400" height="300" fill="url(#bg)"/>
+<rect width="400" height="300" fill="url(#dots)" opacity=".7"/>
+<circle cx="200" cy="150" r="130" fill="url(#glow)"/>
+<g transform="translate(200 168) scale(.8) translate(-200 -150)">
+<ellipse cx="200" cy="246" rx="96" ry="11" fill="#0f172a" opacity=".08"/>
+
+<circle cx="200" cy="86" r="28" stroke="#94a3b8" stroke-width="7" fill="none"/>
+<g transform="rotate(-22 200 114)">
+  <circle cx="200" cy="138" r="22" fill="#facc15"/>
+  <circle cx="200" cy="132" r="7" fill="#fef9c3"/>
+  <rect x="193" y="154" width="14" height="78" rx="3" fill="#eab308"/>
+  <rect x="205" y="200" width="12" height="9" fill="#eab308"/>
+  <rect x="205" y="216" width="17" height="9" fill="#eab308"/>
+</g>
+<g transform="rotate(20 200 114)">
+  <circle cx="200" cy="138" r="22" fill="#cbd5e1"/>
+  <circle cx="200" cy="132" r="7" fill="#f1f5f9"/>
+  <rect x="193" y="154" width="14" height="70" rx="3" fill="#94a3b8"/>
+  <rect x="181" y="196" width="13" height="9" fill="#94a3b8"/>
+  <rect x="185" y="210" width="9" height="9" fill="#94a3b8"/>
+</g>
+<path d="M226 104l18 30" stroke="#94a3b8" stroke-width="4"/>
+<circle cx="250" cy="148" r="18" fill="#ef4444"/>
+<path d="M250 134v28M236 148h28M240 138l20 20M260 138l-20 20" stroke="#7f1d1d" stroke-width="1.6" opacity=".6"/>
+
+</g>
+</svg>

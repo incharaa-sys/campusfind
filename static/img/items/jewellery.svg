@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf4ff"/><stop offset="1" stop-color="#fae8ff"/></linearGradient>
+<pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="#f5d0fe"/></pattern>
+<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+
+<linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+<linearGradient id="steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2dd4bf"/><stop offset=".6" stop-color="#14b8a6"/><stop offset="1" stop-color="#0f766e"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset=".5" stop-color="#f59e0b"/><stop offset="1" stop-color="#b45309"/></linearGradient>
+</defs>
+<rect width="400" height="300" fill="url(#bg)"/>
+<rect width="400" height="300" fill="url(#dots)" opacity=".7"/>
+<circle cx="200" cy="150" r="130" fill="url(#glow)"/>
+<g transform="translate(200 168) scale(.8) translate(-200 -150)">
+<ellipse cx="200" cy="246" rx="96" ry="11" fill="#0f172a" opacity=".08"/>
+
+<ellipse cx="200" cy="176" rx="56" ry="50" stroke="url(#gold)" stroke-width="13" fill="none"/>
+<path d="M186 124h28l6 10h-40z" fill="#d97706"/>
+<polygon points="176,96 224,96 238,112 200,146 162,112" fill="#a855f7"/>
+<path d="M176 96 188 112 200 96 212 112 224 96M162 112h76M188 112l12 34 12-34" stroke="#f3e8ff" stroke-width="2" fill="none" opacity=".8"/>
+<path d="M262 82l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#f59e0b"/>
+<path d="M136 96l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#c084fc"/>
+
+</g>
+</svg>

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% from "_ui.html" import icon %}
+{% block title %}Home{% endblock %}
+{% block main_class %}home{% endblock %}
+{% block body %}
+<section class="hero">
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <span class="eyebrow {{ 'on' if ai_enabled else 'off' }}">
+        {{ icon('sparkles' if ai_enabled else 'cpu') }}
+        {{ 'AI matching by Claude is on' if ai_enabled else 'Smart local matching is on' }}
+      </span>
+      <h1>Lost it? Found it?<br><span class="grad">We'll connect you.</span></h1>
+      <p class="lead">One place for the whole campus. Post a photo and our matcher checks every report by description, photo, place and date, then tells you why it found a match.</p>
+      <div class="hero-cta">
+        <a class="btn btn-lg btn-lost" href="{{ url_for('report', kind='lost') }}">{{ icon('help') }}Report a lost item</a>
+        <a class="btn btn-lg btn-found" href="{{ url_for('report', kind='found') }}">{{ icon('plus') }}Report a found item</a>
+      </div>
+      <dl class="stats">
+        <div><dt>Lost</dt><dd class="c-lost">{{ stats[0] or 0 }}</dd></div>
+        <div><dt>Found</dt><dd class="c-found">{{ stats[1] or 0 }}</dd></div>
+        <div><dt>Returned</dt><dd class="c-brand">{{ stats[2] or 0 }}</dd></div>
+      </dl>
+    </div>
+    <div class="hero-art">
+      <img src="{{ url_for('static', filename='img/hero.svg') }}" alt="A lost report and a found report for the same earbuds, linked by a 94% match">
+    </div>
+  </div>
+</section>
+
+<section class="wrap steps">
+  <div class="step">
+    <div class="step-ic c1">{{ icon('camera') }}</div>
+    <div><h3>1. Post in seconds</h3><p>Snap a photo. The AI fills in the item, color, brand and details for you.</p></div>
+  </div>
+  <div class="step">
+    <div class="step-ic c2">{{ icon('sparkles') }}</div>
+    <div><h3>2. Get matched</h3><p>Every new report is compared with open reports. Each match gets a score and a reason.</p></div>
+  </div>
+  <div class="step">
+    <div class="step-ic c3">{{ icon('shield') }}</div>
+    <div><h3>3. Collect safely</h3><p>Pick up from the security desk with your college ID, and close the post with your item code.</p></div>
+  </div>
+</section>
+
+<section class="wrap board" id="board">
+  <div class="section-head">
+    <div>
+      <h2>Recent reports</h2>
+      <p class="muted">{{ items|length }} {{ 'item' if items|length == 1 else 'items' }}{% if f.q or f.kind or f.category %} match your filters{% endif %}</p>
+    </div>
+  </div>
+
+  <form class="filters" method="get" action="{{ url_for('index') }}#board">
+    <label class="search">
+      {{ icon('search') }}
+      <input name="q" placeholder="Search: blue bottle, casio, library…" value="{{ f.q }}" aria-label="Search">
+    </label>
+    <select name="kind" aria-label="Type">
+      <option value="">Lost &amp; found</option>
+      <option value="lost" {{ 'selected' if f.kind=='lost' }}>Lost only</option>
+      <option value="found" {{ 'selected' if f.kind=='found' }}>Found only</option>
+    </select>
+    <select name="category" aria-label="Category">
+      <option value="">All categories</option>
+      {% for c in categories %}<option {{ 'selected' if f.category==c }}>{{ c }}</option>{% endfor %}
+    </select>
+    <select name="show" aria-label="Status">
+      <option value="open">Open only</option>
+      <option value="all" {{ 'selected' if f.show=='all' }}>Include returned</option>
+    </select>
+    <button class="btn btn-dark">{{ icon('search') }}Search</button>
+    {% if f.q or f.kind or f.category or f.show == 'all' %}
+      <a class="btn btn-ghost" href="{{ url_for('index') }}#board">Clear</a>
+    {% endif %}
+  </form>
+
+  {% if items %}
+  <div class="grid">
+    {% for it in items %}{% include "_card.html" %}{% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <img src="{{ url_for('static', filename='img/empty.svg') }}" alt="">
+    <h3>Nothing here yet</h3>
+    <p>{% if f.q or f.kind or f.category %}Try a different search or clear the filters.{% else %}Be the first to post a lost or found item.{% endif %}</p>
+    <a class="btn btn-primary" href="{{ url_for('report', kind='found') }}">{{ icon('plus') }}Post an item</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
